@@ -11,6 +11,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#e84e1b"
+      },
+      fontFamily: {
+        sans: ['Montserrat', 'Roboto', 'Arial', 'Helvetica', 'sans-serif'],
+        serif: ['"Darumadrop One"', 'serif'], 
       },
     },
   },
