@@ -1,5 +1,8 @@
+"use client"
 import Image from 'next/image'
-import { useMemo } from 'react'
+import { useActionState, useEffect, useMemo } from 'react'
+import { loginAction, signinAction } from './actions'
+import { redirect } from 'next/navigation'
 
 const UserForm = ({ isLogin }: { isLogin: boolean }) => {
 
@@ -15,6 +18,16 @@ const UserForm = ({ isLogin }: { isLogin: boolean }) => {
       ? 'https://www.iue.edu.co/wp-content/uploads/2022/11/Fondo-teams-2-04-scaled.jpg'
       : 'https://www.iue.edu.co/wp-content/uploads/2022/11/Fondo-teams-2-01-scaled.jpg'
   }), [isLogin])
+
+  const actionFunction = useMemo(() => (isLogin ? loginAction : signinAction), [isLogin]);
+  const initialState = { message: "", success: false };
+  const [state, formAction, isPending] = useActionState(actionFunction, initialState)
+
+  useEffect(() => {
+    if (state.success) {
+      redirect("/")
+    }
+  }, [state])
 
   return (
     <div className={`flex font-sans min-h-screen ${isLogin ? 'flex-row-reverse' : ''}`}>
@@ -33,9 +46,9 @@ const UserForm = ({ isLogin }: { isLogin: boolean }) => {
         </div>
 
         <div className="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form action={formAction} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+              <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 Nombre de usuario
               </label>
               <div className="mt-2">
@@ -43,7 +56,6 @@ const UserForm = ({ isLogin }: { isLogin: boolean }) => {
                   id="username"
                   name="username"
                   type="text"
-                  required
                   autoComplete="email"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
@@ -60,11 +72,11 @@ const UserForm = ({ isLogin }: { isLogin: boolean }) => {
                   id="password"
                   name="password"
                   type="password"
-                  required
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
+              {state.message && <p className='text-xs font-semibold text-left p-1 text-error-color'>{state.message}</p> }
             </div>
 
             <div>
@@ -72,7 +84,7 @@ const UserForm = ({ isLogin }: { isLogin: boolean }) => {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                {texts.button}
+                {isPending ? <span className="loading loading-dots loading-xs"></span> : texts.button}
               </button>
             </div>
           </form>

@@ -11,13 +11,16 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "#e84e1b"
+        primary: "#e84e1b",
+        'error-color': "#ff5c5c"
       },
       fontFamily: {
         sans: ['Montserrat', 'Roboto', 'Arial', 'Helvetica', 'sans-serif'],
-        serif: ['"Darumadrop One"', 'serif'], 
+        serif: ['"Darumadrop One"', 'serif'],
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
 } satisfies Config;
